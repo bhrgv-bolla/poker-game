@@ -18,7 +18,6 @@ public class RegularPoker implements PokerHand<RegularPokerHandRanking> {
 		}
 		
 		return handRanking;
-		
 	}
 
 }

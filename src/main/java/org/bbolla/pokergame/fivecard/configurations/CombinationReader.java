@@ -4,12 +4,10 @@ import org.bbolla.pokergame.fivecard.Card;
 
 import java.io.IOException;
 
-public interface CombinationReader<$ResultType> {
+public interface CombinationReader {
+    CombinationRecord getCombination(Card[] cards) throws IOException;
 
-    $ResultType getCombination(Card[] cards) throws IOException;
-
-    $ResultType[] getTopCombinations(Card[] cards, int page, int pageSize) throws IOException;
+    CombinationRecord[] getTopCombinations(Card[] cards, int page, int pageSize) throws IOException;
 
     ConfidenceStats<PokerHandRanking> getConfidenceStats(Card[] cards) throws IOException;
-
 }
