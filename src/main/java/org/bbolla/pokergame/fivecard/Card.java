@@ -19,7 +19,7 @@ public class Card implements Comparable<Card>{
 	@Override
 	public int compareTo(Card other) {
 		if(this.value.equals(other.value)) {
-			return this.type.compare(other.type);
+			return this.type.compareTo(other.type);
 		} else {
 			return this.value.compareTo(other.value);
 		}

@@ -1,6 +1,7 @@
 package org.bbolla.pokergame.fivecard.configurations;
 
-import com.walmart.odr.framework.Card;
+
+import org.bbolla.pokergame.fivecard.Card;
 
 public interface PokerHandRanking {
 

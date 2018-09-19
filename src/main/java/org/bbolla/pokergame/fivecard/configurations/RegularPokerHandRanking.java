@@ -2,7 +2,7 @@ package org.bbolla.pokergame.fivecard.configurations;
 
 import java.util.function.Function;
 
-import com.walmart.odr.framework.Card;
+import org.bbolla.pokergame.fivecard.Card;
 
 public enum RegularPokerHandRanking implements PokerHandRanking {
 
