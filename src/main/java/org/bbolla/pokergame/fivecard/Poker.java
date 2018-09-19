@@ -2,7 +2,7 @@ package org.bbolla.pokergame.fivecard;
 
 import org.bbolla.pokergame.fivecard.configurations.PokerHand;
 import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
-import org.bbolla.pokergame.fivecard.configurations.RegularPoker;
+import org.bbolla.pokergame.fivecard.configurations.FiveCardPokerHand;
 
 public class Poker {
 
@@ -10,7 +10,7 @@ public class Poker {
     public static void main(String[] args) {
 
 
-        PokerHand pokerHand = new RegularPoker();
+        PokerHand pokerHand = new FiveCardPokerHand();
 
         PokerHandRanking pokerHandRank = pokerHand.findRank(null);
 

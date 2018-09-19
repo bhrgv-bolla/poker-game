@@ -5,9 +5,8 @@ package org.bbolla.pokergame.fivecard;
  * @author bhargav
  *
  */
-public enum CardType implements Comparable<CardType> {
-	
-	A(new int[]{1, 14}),
+public enum CardType {
+
 	TWO(new int[]{2}),
 	THREE(new int[]{3}),
 	FOUR(new int[]{4}),
@@ -19,7 +18,8 @@ public enum CardType implements Comparable<CardType> {
 	TEN(new int[]{10}),
 	J(new int[]{11}),
 	Q(new int[]{12}),
-	K(new int[]{13});
+	K(new int[]{13}),
+	A(new int[]{1, 14});
 
 	private int[] values;
 	
@@ -30,6 +30,10 @@ public enum CardType implements Comparable<CardType> {
 	public int getHighestVal() {
 		if(this.values.length == 1) return this.values[0];
 		else return this.values[1];
+	}
+
+	public boolean isHigher(CardType other) {
+		return this.ordinal() > other.ordinal();
 	}
 
 	

@@ -5,9 +5,11 @@ import org.bbolla.pokergame.fivecard.Card;
 
 public interface PokerHandRanking {
 
-	public boolean check(Card[] cards);
+	boolean check(Card[] cards);
 
-	public int rank();
+	int subRank(Card[] cards);
+
+	int rank();
 	
 
 	/**
@@ -15,7 +17,7 @@ public interface PokerHandRanking {
 	 * @param otherHandRanking
 	 * @return
 	 */
-	public default boolean ranksHigherThan(PokerHandRanking otherHandRanking) {
+	default boolean ranksHigherThan(PokerHandRanking otherHandRanking) {
 		return this.rank() < otherHandRanking.rank();
 	}
 }

@@ -2,13 +2,13 @@ package org.bbolla.pokergame.fivecard.configurations;
 
 import org.bbolla.pokergame.fivecard.Card;
 
-public class RegularPoker implements PokerHand<RegularPokerHandRanking> {
+public class FiveCardPokerHand implements PokerHand<FiveCardPokerHandRanking> {
 
 	@Override
-	public RegularPokerHandRanking findRank(Card[] cards) {
-		RegularPokerHandRanking handRanking = null;
+	public FiveCardPokerHandRanking findRank(Card[] cards) {
+		FiveCardPokerHandRanking handRanking = null;
 
-		for (RegularPokerHandRanking ranking : RegularPokerHandRanking.values()) {
+		for (FiveCardPokerHandRanking ranking : FiveCardPokerHandRanking.values()) {
 
 			if (ranking.check(cards) &&
 					(handRanking == null ||ranking.ranksHigherThan(handRanking))

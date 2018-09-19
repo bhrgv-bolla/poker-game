@@ -1,7 +1,9 @@
 package org.bbolla.pokergame.fivecard;
 
+import lombok.Data;
 import lombok.NonNull;
 
+@Data
 public class Card implements Comparable<Card>{
 
 
@@ -45,4 +47,7 @@ public class Card implements Comparable<Card>{
 	}
 
 
+	public boolean hasSameValue(Card previous) {
+		return this.getValue().equals(previous.getValue());
+	}
 }
