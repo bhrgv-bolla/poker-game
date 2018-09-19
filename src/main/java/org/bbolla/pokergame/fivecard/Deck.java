@@ -1,6 +1,7 @@
 package org.bbolla.pokergame.fivecard;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Deck {
@@ -13,6 +14,7 @@ public class Deck {
 				cards.add(new Card(cardType, cardValue));
 			}
 		}
+		Collections.sort(cards);
 	}
 	
 	public static List<Card> getCards() {

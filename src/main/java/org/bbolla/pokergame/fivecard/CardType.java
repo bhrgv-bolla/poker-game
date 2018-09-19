@@ -5,7 +5,7 @@ package org.bbolla.pokergame.fivecard;
  * @author bhargav
  *
  */
-public enum CardType {
+public enum CardType implements Comparable<CardType> {
 	
 	A(new int[]{1, 14}),
 	TWO(new int[]{2}),
@@ -31,6 +31,7 @@ public enum CardType {
 		if(this.values.length == 1) return this.values[0];
 		else return this.values[1];
 	}
+
 	
 	CardType(int[] values) {
 		this.values = values;

@@ -1,5 +1,10 @@
 package org.bbolla.pokergame.fivecard;
 
+import org.bbolla.pokergame.fivecard.configurations.CombinationWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -10,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Generates and stores all possibilities along with their rank into a text
@@ -18,70 +24,61 @@ import java.util.List;
  * @author bhargav
  *
  */
-public class PokerPossibilitiesGenerator<PokerHandRanking> {
+@Component
+public class PokerPossibilitiesGenerator {
 
-	static FileWriter fileWriter;
-	static long possibilities = 0L;
+	static final AtomicBoolean inProgress = new AtomicBoolean(false);
 
-	static {
+	@Autowired
+	CombinationWriter writer;
+
+	public boolean isFree() {
+		return !inProgress.get();
+	}
+
+	public void generate() throws IOException {
+		if(inProgress.get()) throw new RuntimeException("Processing Previous Request, Try again later");
+		inProgress.set(true);
+
+		writer.init();
 		List<Card> cards = Deck.getCards();
+		generateCombinations(cards, 0, 7, 0, new Card[7]);
+		writer.close();
 
-		System.out.println(cards.size());
-		try {
-			File file = new File("fiveCardPoker/all_possibilities");
-			file.delete();
-			file.createNewFile();
-			fileWriter = new FileWriter(file);
-			fileWriter.write("Generating All Possibilities" + new Date() + System.lineSeparator());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Cannot open the file", e);
-		}
-
-		generateCombinations(cards, 0, 7, 0, new Integer[7]);
-
-		try {
-			fileWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error closing file", e);
-		}
-
+		inProgress.set(false);
 	}
 
-	public static void writeToFile(String line) {
-		try {
-			fileWriter.append(line + System.lineSeparator());
-			System.out.println(possibilities++);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new RuntimeException("Writing to file failed", e);
-		}
-	}
 
-	private static void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
-			Integer[] currentCards) {
+	/**
+	 * Recursive method to generate card combinations given a deck of cards and max number of visible cards
+	 * @param cards
+	 * @param deckIdx
+	 * @param maxOpenCards
+	 * @param currentCardIdx
+	 * @param currentCards
+	 */
+	private void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
+			Card[] currentCards) throws IOException {
 
 		if (deckIdx >= cards.size()) {
 			if (currentCardIdx == maxOpenCards)
-				writeToFile(Arrays.deepToString(currentCards));
+				writer.saveCombination(currentCards);
 			return;
 		} else if (currentCardIdx == maxOpenCards) {
-			writeToFile(Arrays.deepToString(currentCards));
+			writer.saveCombination(currentCards);
 			return;
 		}
 
 		for (int i = deckIdx; i < cards.size(); i++) {
-			// System.out.println(i);
-			currentCards[currentCardIdx] = i;
+			currentCards[currentCardIdx] = cards.get(i);
 			generateCombinations(cards, i + 1, maxOpenCards, currentCardIdx + 1, currentCards);
 		}
 
 	}
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws IOException {
+		PokerPossibilitiesGenerator generator = new PokerPossibilitiesGenerator();
+		generator.generate();
 	}
 
 }
