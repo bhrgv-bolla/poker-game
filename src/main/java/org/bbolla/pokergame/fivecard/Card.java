@@ -8,7 +8,7 @@ public class Card implements Comparable<Card>{
 
 
 
-	public Card(@NonNull Suit cardType,@NonNull CardType cardValue) {
+	public Card(@NonNull Suit cardType,@NonNull CardValue cardValue) {
 		this.type = cardType;
 		this.value = cardValue;
 	}
@@ -16,11 +16,11 @@ public class Card implements Comparable<Card>{
 
 	public Card(@NonNull String cardType,@NonNull String cardValue) {
 		this.type = Suit.valueOf(cardType);
-		this.value = CardType.valueOf(cardValue);
+		this.value = CardValue.valueOf(cardValue);
 	}
 
 	Suit type;
-	CardType value;
+	CardValue value;
 
 	@Override
 	public String toString() {

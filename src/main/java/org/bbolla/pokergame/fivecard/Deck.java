@@ -10,7 +10,7 @@ public class Deck {
 	
 	static {
 		for(Suit cardType : Suit.values()) {
-			for(CardType cardValue: CardType.values()) {
+			for(CardValue cardValue: CardValue.values()) {
 				cards.add(new Card(cardType, cardValue));
 			}
 		}

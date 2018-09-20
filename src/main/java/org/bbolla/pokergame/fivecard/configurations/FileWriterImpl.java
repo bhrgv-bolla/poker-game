@@ -2,6 +2,7 @@ package org.bbolla.pokergame.fivecard.configurations;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.Card;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 public class FileWriterImpl implements CombinationWriter {
 
 
+    @Autowired
+    PokerHand pokerHand;
+
     private static final File file = new File("five_card_possibilities.txt");
     private FileWriter fileWriter;
 
@@ -25,9 +29,11 @@ public class FileWriterImpl implements CombinationWriter {
 
     @Override
     public void saveCombination(Card[] cards) throws IOException {
+        PokerHandRanking ranking = pokerHand.findRank(cards);
         writeToFile(Arrays.stream(cards)
                 .map(card -> card.toString())
-                .collect(Collectors.joining(",")));
+                .collect(Collectors.joining(",")) + "," + ranking.toString()
+        +","+ranking.subRank(cards));
     }
 
     @Override

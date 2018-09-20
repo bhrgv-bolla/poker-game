@@ -10,6 +10,8 @@ public interface PokerHandRanking {
 	int subRank(Card[] cards);
 
 	int rank();
+
+	String toString();
 	
 
 	/**

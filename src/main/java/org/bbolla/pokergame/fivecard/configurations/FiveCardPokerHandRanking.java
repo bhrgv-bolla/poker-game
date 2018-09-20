@@ -1,9 +1,11 @@
 package org.bbolla.pokergame.fivecard.configurations;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.NonNull;
 import org.bbolla.pokergame.fivecard.Card;
-import org.bbolla.pokergame.fivecard.CardType;
+import org.bbolla.pokergame.fivecard.CardValue;
 import org.bbolla.pokergame.fivecard.Suit;
 
 import java.util.*;
@@ -30,52 +32,132 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         }
 
         if (total < 5
-                || !lowest.getValue().equals(CardType.TEN)
-                || !highest.getValue().equals(CardType.A)) return false;
+                || !lowest.getValue().equals(CardValue.TEN)
+                || !highest.getValue().equals(CardValue.A)) return false;
         else return true;
     },
             cards -> {
                 return -1;
             }),
 
-    STRAIGHT_FLUSH(2, cards -> {
-        return true;
+    STRAIGHT_FLUSH(2, cards -> { //Same suit and straight.
+        if (cards.length < 5) return false;
+        Map<Suit, List<Card>> suitMap = Maps.newHashMap();
+        for (Card card : cards) {
+            if (suitMap.containsKey(card.getType())) {
+                suitMap.get(card.getType()).add(card);
+            } else {
+                suitMap.put(card.getType(), Lists.newArrayList(card));
+            }
+        }
+
+        for (Map.Entry<Suit, List<Card>> entry : suitMap.entrySet()) {
+            if (entry.getValue().size() >= 5) {
+                return checkStraight(entry.getValue().toArray(new Card[]{}));
+            }
+        }
+
+        return false;
     },
             cards -> {
-                return 0;
+                return -1;
             }),
 
     FOUR_OF_A_KIND(3, cards -> {
-        return true;
+        if (cards.length < 4) return false;
+        Map<CardValue, Integer> typeCount = Maps.newHashMap();
+        for (Card card : cards) {
+            if (typeCount.containsKey(card.getValue())) {
+                typeCount.put(card.getValue(), typeCount.get(card.getValue()) + 1);
+            } else {
+                typeCount.put(card.getValue(), 1);
+            }
+        }
+
+        if (typeCount.containsValue(4)) return true;
+        else return false;
     },
             cards -> {
-                return 0;
+                if (cards.length < 4) return -1;
+                Map<CardValue, Integer> typeCount = Maps.newHashMap();
+                for (Card card : cards) {
+                    if (typeCount.containsKey(card.getValue())) {
+                        typeCount.put(card.getValue(), typeCount.get(card.getValue()) + 1);
+                    } else {
+                        typeCount.put(card.getValue(), 1);
+                    }
+                }
+                CardValue highFourOfAKind = null;
+
+                for (Map.Entry<CardValue, Integer> entry : typeCount.entrySet()) {
+                    if (entry.getValue() == 4) {
+                        if (highFourOfAKind == null || !highFourOfAKind.isHigher(entry.getKey())) {
+                            highFourOfAKind = entry.getKey();
+                        }
+                    }
+                }
+                if (highFourOfAKind == null) return -1;
+                else return highFourOfAKind.getHighestVal();
+
             }),
 
     FULL_HOUSE(4, cards -> {
-        return true;
+        // 3 of a kind + A pair.
+        if(cards.length < 5) return false;
+        Map<CardValue, Integer> valueCount = Maps.newHashMap();
+        for(Card card: cards) {
+            if(valueCount.containsKey(card.getValue())) {
+                valueCount.put(card.getValue(), valueCount.get(card.getValue()) + 1);
+            } else {
+                valueCount.put(card.getValue(), 1);
+            }
+        }
+
+        List<Integer> values = Lists.newArrayList(valueCount.values());
+        Collections.sort(values);
+        if(values.size() >= 2) { //at min these values should be different.
+            return values.get(values.size() - 1) >= 3 &&
+                    values.get(values.size() - 2) >= 2;
+        } else {
+            return false;
+        }
     },
             cards -> {
-                return 0;
+                return -1;
             }),
 
+    //Five of same suit
     FLUSH(5, cards -> {
-        return true;
+        if(cards.length < 5) return false;
+
+        Map<Suit, Integer> suitCount = Maps.newHashMap();
+        for(Card card: cards) {
+            if(suitCount.containsKey(card.getType())) {
+                suitCount.put(card.getType(), suitCount.get(card.getType()) + 1);
+            } else {
+                suitCount.put(card.getType(), 1);
+            }
+        }
+
+        for(int count : suitCount.values()) {
+            if(count >= 5) return true;
+        }
+        return false;
     },
             cards -> {
-                return 0;
+                return -1;
             }),
 
     STRAIGHT(6, cards -> {
-        return true;
+        return checkStraight(cards);
     },
             cards -> {
-                return 0;
+                return -1;
             }),
 
     THREE_OF_A_KIND(7, cards -> {
         if (cards.length < 3) return false;
-        Map<CardType, Integer> typeCount = Maps.newHashMap();
+        Map<CardValue, Integer> typeCount = Maps.newHashMap();
         for (Card card : cards) {
             if (typeCount.containsKey(card.getValue())) {
                 typeCount.put(card.getValue(), typeCount.get(card.getValue()) + 1);
@@ -89,7 +171,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
     },
             cards -> {
                 if (cards.length < 3) return -1;
-                Map<CardType, Integer> typeCount = Maps.newHashMap();
+                Map<CardValue, Integer> typeCount = Maps.newHashMap();
                 for (Card card : cards) {
                     if (typeCount.containsKey(card.getValue())) {
                         typeCount.put(card.getValue(), typeCount.get(card.getValue()) + 1);
@@ -97,9 +179,9 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
                         typeCount.put(card.getValue(), 1);
                     }
                 }
-                CardType highThreeOfAKind = null;
+                CardValue highThreeOfAKind = null;
 
-                for (Map.Entry<CardType, Integer> entry : typeCount.entrySet()) {
+                for (Map.Entry<CardValue, Integer> entry : typeCount.entrySet()) {
                     if (entry.getValue() == 3) {
                         if (highThreeOfAKind == null || !highThreeOfAKind.isHigher(entry.getKey())) {
                             highThreeOfAKind = entry.getKey();
@@ -185,22 +267,51 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         this.subRank = subRank;
     }
 
+    private static Boolean checkStraight(Card[] cards) {
+        if (cards.length < 5) return false;
+        TreeSet<Integer> allCardValues = Sets.newTreeSet();
+        for (Card card : cards) {
+            for (int val : card.getValue().getValues()) {
+                allCardValues.add(val);
+            }
+        }
+
+        List<Integer> distinctCardValues = Lists.newArrayList(allCardValues);
+
+        if (distinctCardValues.size() < 5) return false;
+
+        for (int i = 0, nextIdx = i + 4; nextIdx < distinctCardValues.size() && i < distinctCardValues.size(); i++) {
+            if (distinctCardValues.get(nextIdx) == distinctCardValues.get(i) + 4) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public boolean check(Card[] cards) {
         if (cards == null) return false;
+        if (cards.length > 7) throw new IllegalStateException("Cards cannot be more than 7");
         return this.methodToCheck.apply(cards);
     }
 
     @Override
     public int subRank(@NonNull Card[] cards) {
+        if (cards.length > 7) throw new IllegalStateException("Cards cannot be more than 7");
         Card[] newCopy = Arrays.copyOf(cards, cards.length);
         Arrays.sort(newCopy);
-        return this.subRank(newCopy);
+        return this.subRank.apply(newCopy);
     }
 
     @Override
     public int rank() {
         return this.rank;
+    }
+
+    @Override
+    public String toString() {
+        return this.name();
     }
 
 }

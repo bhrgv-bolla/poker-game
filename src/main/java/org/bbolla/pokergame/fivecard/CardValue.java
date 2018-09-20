@@ -5,7 +5,7 @@ package org.bbolla.pokergame.fivecard;
  * @author bhargav
  *
  */
-public enum CardType {
+public enum CardValue {
 
 	TWO(new int[]{2}),
 	THREE(new int[]{3}),
@@ -32,12 +32,12 @@ public enum CardType {
 		else return this.values[1];
 	}
 
-	public boolean isHigher(CardType other) {
+	public boolean isHigher(CardValue other) {
 		return this.ordinal() > other.ordinal();
 	}
 
 	
-	CardType(int[] values) {
+	CardValue(int[] values) {
 		this.values = values;
 	}
 }
