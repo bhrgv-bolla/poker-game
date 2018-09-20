@@ -21,6 +21,7 @@ public class FileWriterImpl implements CombinationWriter {
     private FileWriter fileWriter;
     private static final List<String> pendingWrites = Lists.newArrayList();
     private static final int BULK_WRITE_THRESHOLD = 10000;
+    private static int totalWritten = 0;
 
     public void writeToFile(String line) throws IOException {
         if(pendingWrites.size() > BULK_WRITE_THRESHOLD) {
@@ -43,6 +44,7 @@ public class FileWriterImpl implements CombinationWriter {
     public void init() throws IOException {
         log.info("Writing to file : {}", file.getAbsolutePath());
         pendingWrites.clear();
+        totalWritten = 0;
         file.delete();
         file.createNewFile();
         fileWriter = new FileWriter(file);
@@ -58,6 +60,8 @@ public class FileWriterImpl implements CombinationWriter {
 
     private void writePendingRecords() throws IOException {
         if(pendingWrites.size() > 0) {
+            totalWritten += pendingWrites.size();
+            log.info("Writing records : {}; totalWritten: {}", pendingWrites.size(), totalWritten);
             fileWriter.write(String.join(System.lineSeparator(), pendingWrites));
             pendingWrites.clear();
         }
