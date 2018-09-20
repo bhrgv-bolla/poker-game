@@ -258,7 +258,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
     private int rank;
     private Function<Card[], Boolean> methodToCheck;
     private Function<Card[], Integer> subRank;
-    private Map<Integer, FiveCardPokerHandRanking> rankingMap;
+    private Map<Integer, FiveCardPokerHandRanking> rankingMap = new HashMap<>();
 
     FiveCardPokerHandRanking(int rank,
                              Function<Card[], Boolean> methodToCheck,

@@ -28,7 +28,7 @@ public class DBReaderImpl implements CombinationReader {
         Card[] cards = Arrays.copyOf(originalCards, originalCards.length);
         Arrays.sort(cards); //make sure the cards are soreted.
         Collection<String> pokerHand = Arrays.asList(cards).stream().map(Card::toString).collect(Collectors.toList());
-        FiveCardPokerDBRecord[] response = fiveCardPokerRepository.findTopByCard1InAndCard2InAndCard3InAndCard4InAndCard5InAndCard6InAndCard7In(
+        FiveCardPokerDBRecord[] response = fiveCardPokerRepository.findTopByCard1InOrCard2InOrCard3InOrCard4InOrCard5InOrCard6InOrCard7In(
                 pokerHand,
                 pokerHand,
                 pokerHand,
