@@ -1,7 +1,10 @@
 package org.bbolla.pokergame.fivecard;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bbolla.pokergame.fivecard.configurations.CombinationRecord;
 import org.bbolla.pokergame.fivecard.configurations.CombinationWriter;
+import org.bbolla.pokergame.fivecard.configurations.PokerHand;
+import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +27,9 @@ public class PokerPossibilitiesGenerator {
 
     @Autowired
     CombinationWriter writer;
+
+    @Autowired
+    PokerHand pokerHand;
 
     public static void main(String[] args) throws IOException {
         PokerPossibilitiesGenerator generator = new PokerPossibilitiesGenerator();
@@ -58,18 +64,16 @@ public class PokerPossibilitiesGenerator {
      */
     private void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
                                       Card[] currentCards) throws IOException {
-
         if (deckIdx >= cards.size()) {
             if (currentCardIdx == maxOpenCards)
                 possibilities++;
             log.info("Possiblities {}", possibilities);
-            writer.saveCombination(currentCards);
+            writer.saveCombination(getCombinationRecord(currentCards));
             return;
         } else if (currentCardIdx == maxOpenCards) {
             possibilities++;
             log.info("Possiblities {}", possibilities);
-
-            writer.saveCombination(currentCards);
+            writer.saveCombination(getCombinationRecord(currentCards));
             return;
         }
 
@@ -78,6 +82,16 @@ public class PokerPossibilitiesGenerator {
             generateCombinations(cards, i + 1, maxOpenCards, currentCardIdx + 1, currentCards);
         }
 
+    }
+
+    /**
+     * Helper function to prepare a combination record.
+     * @param currentCards
+     * @return
+     */
+    private CombinationRecord getCombinationRecord(Card[] currentCards) {
+        PokerHandRanking handRanking = pokerHand.findRank(currentCards);
+        return new CombinationRecord(currentCards, handRanking, handRanking.subRank(currentCards));
     }
 
 }

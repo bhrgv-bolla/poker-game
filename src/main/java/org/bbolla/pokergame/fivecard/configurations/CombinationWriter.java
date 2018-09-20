@@ -1,7 +1,5 @@
 package org.bbolla.pokergame.fivecard.configurations;
 
-import org.bbolla.pokergame.fivecard.Card;
-
 import java.io.IOException;
 
 /**
@@ -9,7 +7,7 @@ import java.io.IOException;
  */
 public interface CombinationWriter {
 
-    void saveCombination(Card[] cards) throws IOException;
+    void saveCombination(CombinationRecord cards) throws IOException;
 
     void init() throws IOException;
 

@@ -1,8 +1,8 @@
 package org.bbolla.pokergame.fivecard;
 
+import org.bbolla.pokergame.fivecard.configurations.FiveCardPokerHand;
 import org.bbolla.pokergame.fivecard.configurations.PokerHand;
 import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
-import org.bbolla.pokergame.fivecard.configurations.FiveCardPokerHand;
 
 public class Poker {
 
