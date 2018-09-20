@@ -15,26 +15,30 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
 
     ROYAL_FLUSH(1, cards -> {
         if (cards.length < 5) return false;
-        Card lowest = null, highest = null;
-        int total = 0;
-        for (Card card : cards) { //TODO same suit; from 10 to A.
-            if (card.getType().equals(Suit.HEART)) {
-                total++;
+        Map<Suit, List<Card>> suitCount = Maps.newHashMap();
 
-                if (lowest == null || lowest.getValue().isHigher(card.getValue())) {
-                    lowest = card;
-                }
-
-                if (highest == null || card.getValue().isHigher(highest.getValue())) {
-                    highest = card;
-                }
+        for(Card card: cards){
+            Suit suit = card.getType();
+            if(suitCount.containsKey(suit)) {
+                suitCount.get(suit).add(card);
+            } else {
+                suitCount.put(suit, Lists.newArrayList(card));
             }
         }
 
-        if (total < 5
-                || !lowest.getValue().equals(CardValue.TEN)
-                || !highest.getValue().equals(CardValue.A)) return false;
-        else return true;
+        for(Map.Entry<Suit, List<Card>> entry : suitCount.entrySet()) {
+            if(entry.getValue().size() >= 5) {
+                List<Card> sameSuit = entry.getValue();
+                Collections.sort(sameSuit);
+                Card highest = sameSuit.get(sameSuit.size() - 1);//0,1,2,3,4
+                Card lowest = sameSuit.get(sameSuit.size() - 5);//
+
+                if(lowest.getValue().equals(CardValue.TEN)
+                && highest.getValue().equals(CardValue.A)) return true;
+            }
+        }
+
+        return false;
     },
             cards -> {
                 return -1;
