@@ -26,9 +26,9 @@ public class DBReaderImpl implements CombinationReader {
     @Override
     public CombinationRecord[] getTopCombinations(Card[] originalCards, int page, int pageSize) throws IOException {
         Card[] cards = Arrays.copyOf(originalCards, originalCards.length);
-        Arrays.sort(cards); //make sure the cards are soreted.
+        Arrays.sort(cards); //make sure the cards are sorted.
         Collection<String> pokerHand = Arrays.asList(cards).stream().map(Card::toString).collect(Collectors.toList());
-        FiveCardPokerDBRecord[] response = fiveCardPokerRepository.findTopByCard1InOrCard2InOrCard3InOrCard4InOrCard5InOrCard6InOrCard7In(
+        FiveCardPokerDBRecord[] response = fiveCardPokerRepository.findAllByCard1InOrCard2InOrCard3InOrCard4InOrCard5InOrCard6InOrCard7InOrderByHandRankingAscSubRankDesc(
                 pokerHand,
                 pokerHand,
                 pokerHand,

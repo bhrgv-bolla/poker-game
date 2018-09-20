@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface FiveCardPokerRepository extends PagingAndSortingRepository<FiveCardPokerDBRecord, Integer> {
 
-    List<FiveCardPokerDBRecord> findTopByCard1InOrCard2InOrCard3InOrCard4InOrCard5InOrCard6InOrCard7In(
+    List<FiveCardPokerDBRecord> findAllByCard1InOrCard2InOrCard3InOrCard4InOrCard5InOrCard6InOrCard7InOrderByHandRankingAscSubRankDesc(
             Collection<String> cards1,
             Collection<String> cards2,
             Collection<String> cards3,

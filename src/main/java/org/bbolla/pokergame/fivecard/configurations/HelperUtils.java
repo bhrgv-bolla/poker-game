@@ -22,7 +22,7 @@ public class HelperUtils {
                         fiveCardPokerDBRecord.getCard5(),
                         fiveCardPokerDBRecord.getCard6(),
                         fiveCardPokerDBRecord.getCard7()}),
-                FiveCardPokerHandRanking.FLUSH.fromRank(fiveCardPokerDBRecord.getHandRanking()),
+                FiveCardPokerHandRanking.fromHandRank(fiveCardPokerDBRecord.getHandRanking()),
                 fiveCardPokerDBRecord.getSubRank()
         );
     }

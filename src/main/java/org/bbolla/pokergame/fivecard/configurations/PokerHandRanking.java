@@ -5,6 +5,8 @@ import org.bbolla.pokergame.fivecard.Card;
 
 public interface PokerHandRanking {
 
+	PokerHandRanking fromRank(int rank);
+
 	boolean check(Card[] cards);
 
 	int subRank(Card[] cards);
@@ -13,7 +15,6 @@ public interface PokerHandRanking {
 
 	String toString();
 
-	PokerHandRanking fromRank(int rank);
 	
 
 	/**

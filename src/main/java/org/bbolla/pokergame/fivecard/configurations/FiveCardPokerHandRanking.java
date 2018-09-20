@@ -17,7 +17,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         if (cards.length < 5) return false;
         Card lowest = null, highest = null;
         int total = 0;
-        for (Card card : cards) {
+        for (Card card : cards) { //TODO same suit; from 10 to A.
             if (card.getType().equals(Suit.HEART)) {
                 total++;
 
@@ -258,15 +258,19 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
     private int rank;
     private Function<Card[], Boolean> methodToCheck;
     private Function<Card[], Integer> subRank;
-    private Map<Integer, FiveCardPokerHandRanking> rankingMap = new HashMap<>();
+    private static Map<Integer, FiveCardPokerHandRanking> rankingMap = new HashMap<>();
 
+    static {
+        for(FiveCardPokerHandRanking ranking: FiveCardPokerHandRanking.values()) {
+            rankingMap.put(ranking.rank, ranking);
+        }
+    }
     FiveCardPokerHandRanking(int rank,
                              Function<Card[], Boolean> methodToCheck,
                              Function<Card[], Integer> subRank) {
         this.rank = rank;
         this.methodToCheck = methodToCheck;
         this.subRank = subRank;
-        this.rankingMap.put(rank, this);
     }
 
     private static Boolean checkStraight(Card[] cards) {
@@ -289,6 +293,10 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         }
 
         return false;
+    }
+
+    public static PokerHandRanking fromHandRank(Integer handRanking) {
+        return rankingMap.get(handRanking);
     }
 
     @Override
@@ -318,7 +326,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
 
     @Override
     public PokerHandRanking fromRank(int rank) {
-        return this.rankingMap.get(rank);
+        return fromHandRank(rank);
     }
 
 }
