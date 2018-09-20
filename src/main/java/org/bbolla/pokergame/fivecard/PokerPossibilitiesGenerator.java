@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PokerPossibilitiesGenerator {
 
     static final AtomicBoolean inProgress = new AtomicBoolean(false);
-    static int possibilities = 0;
 
     @Autowired
     CombinationWriter writer;
@@ -43,7 +42,6 @@ public class PokerPossibilitiesGenerator {
     public void generate() throws IOException {
         if (inProgress.get()) throw new RuntimeException("Processing Previous Request, Try again later");
         inProgress.set(true);
-        possibilities = 0;
 
         writer.init();
         List<Card> cards = Deck.getCards();
@@ -65,14 +63,12 @@ public class PokerPossibilitiesGenerator {
     private void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
                                       Card[] currentCards) throws IOException {
         if (deckIdx >= cards.size()) {
-            if (currentCardIdx == maxOpenCards)
-                possibilities++;
-            log.info("Possiblities {}", possibilities);
-            writer.saveCombination(getCombinationRecord(currentCards));
+            if (currentCardIdx == maxOpenCards) {
+                writer.saveCombination(getCombinationRecord(currentCards));
+            }
             return;
         } else if (currentCardIdx == maxOpenCards) {
-            possibilities++;
-            log.info("Possiblities {}", possibilities);
+
             writer.saveCombination(getCombinationRecord(currentCards));
             return;
         }
@@ -86,6 +82,7 @@ public class PokerPossibilitiesGenerator {
 
     /**
      * Helper function to prepare a combination record.
+     *
      * @param currentCards
      * @return
      */
