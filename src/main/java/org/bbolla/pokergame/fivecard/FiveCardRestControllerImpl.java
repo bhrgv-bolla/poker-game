@@ -48,7 +48,7 @@ public class FiveCardRestControllerImpl implements FiveCardRestController {
                 () -> {
                     try {
                         pokerPossibilitiesGenerator.generate();
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         log.error("Exception while generating", e);
                     }
                 }

@@ -30,7 +30,7 @@ public class PokerPossibilitiesGenerator {
     @Autowired
     PokerHand pokerHand;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         PokerPossibilitiesGenerator generator = new PokerPossibilitiesGenerator();
         generator.generate();
     }
@@ -39,13 +39,14 @@ public class PokerPossibilitiesGenerator {
         return !inProgress.get();
     }
 
-    public void generate() throws IOException {
+    public void generate() throws Exception {
         if (inProgress.get()) throw new RuntimeException("Processing Previous Request, Try again later");
         inProgress.set(true);
 
         writer.init();
         List<Card> cards = Deck.getCards();
         generateCombinations(cards, 0, 7, 0, new Card[7]);
+
         writer.close();
 
         inProgress.set(false);
@@ -68,7 +69,6 @@ public class PokerPossibilitiesGenerator {
             }
             return;
         } else if (currentCardIdx == maxOpenCards) {
-
             writer.saveCombination(getCombinationRecord(currentCards));
             return;
         }

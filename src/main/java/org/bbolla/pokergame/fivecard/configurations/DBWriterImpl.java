@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Write to a Database
  */
-@Component
+//@Component
 @Slf4j
 public class DBWriterImpl implements CombinationWriter {
 
