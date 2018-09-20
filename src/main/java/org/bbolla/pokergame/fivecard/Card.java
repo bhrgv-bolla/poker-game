@@ -1,12 +1,12 @@
 package org.bbolla.pokergame.fivecard;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class Card implements Comparable<Card>{
-
-
 
 	public Card(@NonNull Suit cardType,@NonNull CardValue cardValue) {
 		this.type = cardType;
@@ -14,7 +14,7 @@ public class Card implements Comparable<Card>{
 	}
 
 
-	public Card(@NonNull String cardType,@NonNull String cardValue) {
+	private Card(@NonNull String cardType, @NonNull String cardValue) {
 		this.type = Suit.valueOf(cardType);
 		this.value = CardValue.valueOf(cardValue);
 	}

@@ -1,11 +1,17 @@
 package org.bbolla.pokergame.fivecard;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bbolla.pokergame.fivecard.configurations.CombinationReader;
+import org.bbolla.pokergame.fivecard.configurations.CombinationRecord;
+import org.bbolla.pokergame.fivecard.configurations.PokerHand;
+import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -15,14 +21,24 @@ public class FiveCardRestControllerImpl implements FiveCardRestController {
     @Autowired
     PokerPossibilitiesGenerator pokerPossibilitiesGenerator;
 
+    @Autowired
+    PokerHand pokerHand;
+
+    @Autowired
+    CombinationReader combinationReader;
+
+
     @Override
-    public ResponseEntity<Object> getSuggestions(Card[] cards) {
-        return null;
+    public ResponseEntity<Object> getSuggestions(SuggestionsRequest request) throws IOException {
+        Card[] cards = Deck.getCards().toArray(new Card[]{});
+
+        CombinationRecord[] response = combinationReader.getTopCombinations(Arrays.copyOf(cards, 7), 1, 20);
+        return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<Object> getCurrentHandRanking(Card[] cards) {
-        return null;
+        return ResponseEntity.ok(pokerHand.findRank(cards));
     }
 
     @Override

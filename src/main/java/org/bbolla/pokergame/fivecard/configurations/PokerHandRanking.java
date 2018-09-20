@@ -12,6 +12,8 @@ public interface PokerHandRanking {
 	int rank();
 
 	String toString();
+
+	PokerHandRanking fromRank(int rank);
 	
 
 	/**

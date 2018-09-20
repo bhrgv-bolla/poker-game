@@ -258,6 +258,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
     private int rank;
     private Function<Card[], Boolean> methodToCheck;
     private Function<Card[], Integer> subRank;
+    private Map<Integer, FiveCardPokerHandRanking> rankingMap;
 
     FiveCardPokerHandRanking(int rank,
                              Function<Card[], Boolean> methodToCheck,
@@ -265,6 +266,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         this.rank = rank;
         this.methodToCheck = methodToCheck;
         this.subRank = subRank;
+        this.rankingMap.put(rank, this);
     }
 
     private static Boolean checkStraight(Card[] cards) {
@@ -312,6 +314,11 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
     @Override
     public String toString() {
         return this.name();
+    }
+
+    @Override
+    public PokerHandRanking fromRank(int rank) {
+        return this.rankingMap.get(rank);
     }
 
 }
