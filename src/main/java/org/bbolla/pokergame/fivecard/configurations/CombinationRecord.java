@@ -9,8 +9,17 @@ import org.bbolla.pokergame.fivecard.Card;
  */
 @Data
 @AllArgsConstructor
-public class CombinationRecord {
+public class CombinationRecord implements Comparable<CombinationRecord> {
     private Card[] cards;
     private PokerHandRanking pokerHandRanking;
     private int sameHandRanking;
+
+    @Override
+    public int compareTo(CombinationRecord o) {
+        if(this.pokerHandRanking.rank() == o.pokerHandRanking.rank()) {
+            return this.sameHandRanking - o.sameHandRanking;
+        } else {
+            return this.pokerHandRanking.rank() - o.pokerHandRanking.rank();
+        }
+    }
 }

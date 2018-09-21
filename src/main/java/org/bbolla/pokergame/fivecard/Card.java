@@ -1,11 +1,13 @@
 package org.bbolla.pokergame.fivecard;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Card implements Comparable<Card>{
 
 	public Card(@NonNull Suit cardType,@NonNull CardValue cardValue) {

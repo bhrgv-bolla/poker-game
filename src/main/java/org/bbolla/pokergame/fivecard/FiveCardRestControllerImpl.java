@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -29,9 +31,12 @@ public class FiveCardRestControllerImpl implements FiveCardRestController {
     @Override
     public ResponseEntity<Object> getSuggestions(SuggestionsRequest request) throws IOException {
         Card[] cards = Deck.getCards().toArray(new Card[]{}); //TODO solve problem with Card not being able to read from input request.
-
-        CombinationRecord[] response = combinationReader.getTopCombinations(Arrays.copyOf(cards, 7), 1, 20);
-        return ResponseEntity.ok(response);
+        cards = Arrays.copyOf(cards, 5);
+//        CombinationRecord[] response = combinationReader.getTopCombinations(Arrays.copyOf(cards, 7), 1, 20);
+        List<CombinationRecord> combinationRecordList = pokerHand.betterHands(cards);
+        Collections.sort(combinationRecordList);
+        int high = 10 > combinationRecordList.size()? combinationRecordList.size(): 10;
+        return ResponseEntity.ok(new Object[]{cards, combinationRecordList.size(), combinationRecordList.subList(0, high)});
     }
 
     @Override
