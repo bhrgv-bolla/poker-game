@@ -20,7 +20,7 @@ public class FileWriterImpl implements CombinationWriter {
     private static final File file = new File("five_card_possibilities.txt");
     private FileWriter fileWriter;
     private static final List<String> pendingWrites = Lists.newArrayList();
-    private static final int BULK_WRITE_THRESHOLD = 1000000;
+    private static final int BULK_WRITE_THRESHOLD = 1000000; //1 million records < 100 mb in memory.
     private static int totalWritten = 0;
 
     public void writeToFile(String line) throws IOException {
