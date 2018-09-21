@@ -303,6 +303,10 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
         return rankingMap.get(handRanking);
     }
 
+    public static int rankOf(String s) {
+        return FiveCardPokerHandRanking.valueOf(s).rank();
+    }
+
     @Override
     public boolean check(Card[] cards) {
         if (cards == null) return false;

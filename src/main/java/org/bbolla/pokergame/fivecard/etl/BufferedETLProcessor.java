@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.Card;
 import org.bbolla.pokergame.fivecard.Deck;
+import org.bbolla.pokergame.fivecard.configurations.FiveCardPokerHandRanking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -83,7 +84,7 @@ public class BufferedETLProcessor {
                 rec -> {
                     Object[] args = new Object[54];
                     String[] keys = Arrays.copyOf(rec, 7);
-                    args[52] = rec[7];
+                    args[52] = FiveCardPokerHandRanking.rankOf(rec[7]);
                     args[53] = rec[8];
                     for(String key: keys) {
                         int idx = cardMap.get(key);
