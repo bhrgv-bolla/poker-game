@@ -1,5 +1,7 @@
 package org.bbolla.pokergame.fivecard;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,7 +12,8 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Card implements Comparable<Card>{
 
-	public Card(@NonNull Suit cardType,@NonNull CardValue cardValue) {
+	@JsonCreator
+	public Card(@JsonProperty("type") @NonNull Suit cardType,@JsonProperty("value") @NonNull CardValue cardValue) {
 		this.type = cardType;
 		this.value = cardValue;
 	}

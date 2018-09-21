@@ -7,6 +7,7 @@ import org.bbolla.pokergame.fivecard.configurations.PokerHand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,14 +30,12 @@ public class FiveCardRestControllerImpl implements FiveCardRestController {
 
 
     @Override
-    public ResponseEntity<Object> getSuggestions(SuggestionsRequest request) throws IOException {
-        Card[] cards = Deck.getCards().toArray(new Card[]{}); //TODO solve problem with Card not being able to read from input request.
-        cards = Arrays.copyOf(cards, 5);
-//        CombinationRecord[] response = combinationReader.getTopCombinations(Arrays.copyOf(cards, 7), 1, 20);
-        List<CombinationRecord> combinationRecordList = pokerHand.betterHands(cards);
+    public ResponseEntity<Object> getSuggestions(@RequestBody SuggestionsRequest request) throws IOException {
+        log.info("Request for getSuggestions {}", request);
+        List<CombinationRecord> combinationRecordList = pokerHand.betterHands(request.getCards());
         Collections.sort(combinationRecordList);
         int high = 10 > combinationRecordList.size()? combinationRecordList.size(): 10;
-        return ResponseEntity.ok(new Object[]{cards, combinationRecordList.size(), combinationRecordList.subList(0, high)});
+        return ResponseEntity.ok(new Object[]{combinationRecordList.size(), combinationRecordList.subList(0, high)});
     }
 
     @Override
