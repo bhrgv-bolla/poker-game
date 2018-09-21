@@ -27,7 +27,7 @@ public class BufferedETLProcessor {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private final int bufferSize = 1000000 * 10; // 1 million lines * 100 characters each * 2 bytes per character ( depends on charset )
+    private final int bufferSize = 1000000 * 10; // ~10mb
 
     private static AtomicBoolean inProcessing = new AtomicBoolean(false);
 
@@ -41,15 +41,16 @@ public class BufferedETLProcessor {
             cardMap.put(card.toString(), i++);
         }
         String[] questionMarks = new String[54];
-        Arrays.fill(questionMarks, '?');
-        insertSql = "insert into poker.combination_matrix("+ String.join(",", cardMap.keySet()) +
+        Arrays.fill(questionMarks, "?");
+        insertSql = "insert into poker.combination_matrix_test("+ String.join(",", cardMap.keySet()) +
                     ", hand_ranking, sub_rank) values ("+String.join(",", questionMarks)+")";
+        log.info("insert sql for poker combinations matrix: {}", insertSql);
     }
 
     public CompletableFuture execute() {
         if(inProcessing.get()) throw new RuntimeException("Busy; Try Later");
         inProcessing.set(true);
-        jdbcTemplate.execute("TRUNCATE poker.combination_matrix"); //reset state; TODO make backup before resetting
+        jdbcTemplate.execute("TRUNCATE poker.combination_matrix_test"); //reset state; TODO make backup before resetting
         return CompletableFuture.runAsync(
                 () -> {
                     try {
@@ -65,6 +66,7 @@ public class BufferedETLProcessor {
                         }
                     } catch (Exception e) {
                         inProcessing.set(false);
+                        log.error("Exception occurred; ETL Not completed", e);
                         throw new RuntimeException("Exception completed ETL process", e);
                     }
                 }
@@ -79,23 +81,31 @@ public class BufferedETLProcessor {
     }
 
     private List<Object[]> transform(List<String> records){
+        log.info("records un-parsed : {}", records.get(0));
         List<String[]> recs =  records.stream().map(r -> r.split(",")).collect(Collectors.toList());
         return recs.stream().map(
                 rec -> {
-                    Object[] args = new Object[54];
-                    String[] keys = Arrays.copyOf(rec, 7);
-                    args[52] = FiveCardPokerHandRanking.rankOf(rec[7]);
-                    args[53] = rec[8];
-                    for(String key: keys) {
-                        int idx = cardMap.get(key);
-                        args[idx] = 1;
+                    try {
+                        Object[] args = new Object[54];
+                        Arrays.fill(args, 0);
+                        String[] keys = Arrays.copyOf(rec, 7);
+                        args[52] = FiveCardPokerHandRanking.rankOf(rec[7]);
+                        args[53] = Integer.parseInt(rec[8]);
+                        for (String key : keys) {
+                            int idx = cardMap.get(key);
+                            args[idx] = 1;
+                        }
+                        return args;
+                    } catch (Exception ex) {
+                        log.error("Error while transforming record {}", Arrays.toString(rec));
+                        throw new RuntimeException("Error while transforming record", ex);
                     }
-                    return args;
                 }
         ).collect(Collectors.toList());
     }
 
     private void load(List<Object[]> records) throws Exception {
+        log.info("records sample : {}", Arrays.deepToString(records.get(0)));
         int[] updateCount = jdbcTemplate.batchUpdate(insertSql, records);
         int sum = Arrays.stream(updateCount).sum();
         log.info("Updated {} records", sum);
