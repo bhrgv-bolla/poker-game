@@ -1,5 +1,6 @@
 package org.bbolla.pokergame.fivecard.etl;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.Card;
@@ -9,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -33,9 +34,11 @@ public class BufferedETLProcessor {
 
     private static final LinkedHashMap<String, Integer> cardMap;
     private static final String insertSql;
+    private static final List<String> errors;
 
     static {
         cardMap = Maps.newLinkedHashMap();
+        errors = Lists.newArrayList();
         int i=0;
         for(Card card : Deck.getCards()) {
             cardMap.put(card.toString(), i++);
@@ -57,12 +60,15 @@ public class BufferedETLProcessor {
                         RandomAccessFile file = new RandomAccessFile("five_card_possibilities.txt", "r");
                         log.info("Seeking first line {}", file.readLine());
                         while(true) {
+                            long offsetBefore = file.getFilePointer();
                             List<String> readLines = extract(file);
+                            long offsetAfter = file.getFilePointer();
                             if(readLines.size() == 0) break;
                             else {
                                 List<Object[]> records = transform(readLines);
                                 load(records);
                             }
+                            writeAnyErrorsQuietly(offsetBefore, offsetAfter);
                         }
                     } catch (Exception e) {
                         inProcessing.set(false);
@@ -71,6 +77,25 @@ public class BufferedETLProcessor {
                     }
                 }
         );
+    }
+
+    private void writeAnyErrorsQuietly(Long offsetBefore, Long offsetAfter) {
+        try {
+            if(errors.isEmpty()) return;
+            File file = new File("errors-"+new Date().toString()+".txt");
+            file.createNewFile();
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.println(offsetBefore.toString());
+            printWriter.println(offsetAfter.toString());
+            for(String errorRecord: errors) {
+                printWriter.println(errorRecord);
+            }
+            printWriter.close();
+        } catch (IOException e) {
+            log.error("While writing error records: {} {} {}", offsetBefore, offsetAfter, errors, e);
+        } finally {
+            errors.clear();
+        }
     }
 
     private List<String> extract(RandomAccessFile file) throws IOException {
@@ -82,10 +107,10 @@ public class BufferedETLProcessor {
 
     private List<Object[]> transform(List<String> records){
         log.info("records un-parsed : {}", records.get(0));
-        List<String[]> recs =  records.stream().map(r -> r.split(",")).collect(Collectors.toList());
-        return recs.stream().map(
-                rec -> {
+        return records.stream().map(
+                record -> {
                     try {
+                        String[] rec = record.split(",");
                         Object[] args = new Object[54];
                         Arrays.fill(args, 0);
                         String[] keys = Arrays.copyOf(rec, 7);
@@ -97,11 +122,12 @@ public class BufferedETLProcessor {
                         }
                         return args;
                     } catch (Exception ex) {
-                        log.error("Error while transforming record {}", Arrays.toString(rec));
-                        throw new RuntimeException("Error while transforming record", ex);
+                        log.error("Error while transforming record {}", record);
+                        errors.add(record);//collect errors.
+                        return null;
                     }
                 }
-        ).collect(Collectors.toList());
+        ).filter(r -> null != r).collect(Collectors.toList());
     }
 
     private void load(List<Object[]> records) throws Exception {

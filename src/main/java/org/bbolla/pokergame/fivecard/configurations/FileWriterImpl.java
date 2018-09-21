@@ -6,8 +6,8 @@ import org.bbolla.pokergame.fivecard.Card;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class FileWriterImpl implements CombinationWriter {
 
     private static final File file = new File("five_card_possibilities.txt");
-    private FileWriter fileWriter;
+    private PrintWriter printWriter;
     private static final List<String> pendingWrites = Lists.newArrayList();
     private static final int BULK_WRITE_THRESHOLD = 1000000; //1 million records < 100 mb in memory.
     private static int totalWritten = 0;
@@ -47,22 +47,22 @@ public class FileWriterImpl implements CombinationWriter {
         totalWritten = 0;
         file.delete();
         file.createNewFile();
-        fileWriter = new FileWriter(file);
-        fileWriter.write("Generating All Possibilities : " + new Date() + System.lineSeparator());
+        printWriter = new PrintWriter(file);
+        printWriter.println("Writing File On : " + new Date());
     }
 
     @Override
     public void close() throws Exception {
         writePendingRecords();
-        fileWriter.flush();
-        fileWriter.close();
+        printWriter.flush();
+        printWriter.close();
     }
 
     private void writePendingRecords() throws IOException {
         if(pendingWrites.size() > 0) {
             totalWritten += pendingWrites.size();
             log.info("Writing records : {}; totalWritten: {}", pendingWrites.size(), totalWritten);
-            fileWriter.write(String.join(System.lineSeparator(), pendingWrites));
+            printWriter.println(String.join(System.lineSeparator(), pendingWrites));
             pendingWrites.clear();
         }
     }
