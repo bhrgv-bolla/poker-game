@@ -24,6 +24,8 @@ public class FiveCardPokerHand implements PokerHand<FiveCardPokerHandRanking> {
 		return FiveCardPokerHandRanking.HIGH_CARD;
 	}
 
+
+
 	@Override
 	public List<CombinationRecord> betterHands(Card[] cards) {
 		if(cards.length < 2) return null;
@@ -51,7 +53,7 @@ public class FiveCardPokerHand implements PokerHand<FiveCardPokerHandRanking> {
 	}
 
 
-	private void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
+    private void generateCombinations(List<Card> cards, int deckIdx, int maxOpenCards, int currentCardIdx,
 									  Card[] currentCards, List<CombinationRecord> combinationRecordList) {
 		if (deckIdx >= cards.size()) {
 			if (currentCardIdx == maxOpenCards) {

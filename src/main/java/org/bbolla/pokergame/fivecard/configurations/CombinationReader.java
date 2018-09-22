@@ -9,5 +9,4 @@ public interface CombinationReader {
 
     CombinationRecord[] getTopCombinations(Card[] cards, int page, int pageSize) throws IOException;
 
-    ConfidenceStats<PokerHandRanking> getConfidenceStats(Card[] cards) throws IOException;
 }

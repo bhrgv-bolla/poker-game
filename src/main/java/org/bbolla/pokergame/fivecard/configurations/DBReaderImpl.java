@@ -42,8 +42,4 @@ public class DBReaderImpl implements CombinationReader {
         return HelperUtils.convertFromDBRecord(response);
     }
 
-    @Override
-    public ConfidenceStats<PokerHandRanking> getConfidenceStats(Card[] cards) throws IOException {
-        return null;
-    }
 }
