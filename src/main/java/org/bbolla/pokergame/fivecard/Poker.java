@@ -1,8 +1,8 @@
 package org.bbolla.pokergame.fivecard;
 
+import org.bbolla.pokergame.fivecard.configurations.CombinationRecord;
 import org.bbolla.pokergame.fivecard.configurations.FiveCardPokerHand;
 import org.bbolla.pokergame.fivecard.configurations.PokerHand;
-import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
 
 public class Poker {
 
@@ -12,7 +12,7 @@ public class Poker {
 
         PokerHand pokerHand = new FiveCardPokerHand();
 
-        PokerHandRanking pokerHandRank = pokerHand.findRank(null);
+        CombinationRecord pokerHandRank = pokerHand.findRank(null);
 
         System.out.println(pokerHandRank);
     }

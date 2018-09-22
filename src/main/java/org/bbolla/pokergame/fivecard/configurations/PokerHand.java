@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface PokerHand<T extends PokerHandRanking> {
 
-    T findRank(Card[] cards);
+    CombinationRecord findRank(Card[] cards);
 
     List<CombinationRecord> betterHands(Card[] cards);
 

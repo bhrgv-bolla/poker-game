@@ -22,4 +22,8 @@ public class CombinationRecord implements Comparable<CombinationRecord> {
             return this.pokerHandRanking.rank() - o.pokerHandRanking.rank();
         }
     }
+
+    public boolean isHigherThan(CombinationRecord o) {
+        return this.compareTo(o) > 0;
+    }
 }

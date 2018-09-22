@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 public enum FiveCardPokerHandRanking implements PokerHandRanking {
 
+    //TODO implement sub rank for each of these poker hands.
     ROYAL_FLUSH(1, cards -> {
         if (cards.length < 5) return false;
         Map<Suit, List<Card>> suitCount = Maps.newHashMap();
@@ -78,8 +79,11 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
             }
         }
 
-        if (typeCount.containsValue(4)) return true;
-        else return false;
+
+        for(Map.Entry<CardValue, Integer> entry : typeCount.entrySet()) {
+            if(entry.getValue() >= 4) return true;
+        }
+        return false;
     },
             cards -> {
                 if (cards.length < 4) return -1;
@@ -169,9 +173,10 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
                 typeCount.put(card.getValue(), 1);
             }
         }
-
-        if (typeCount.containsValue(3)) return true;
-        else return true;
+        for(Map.Entry<CardValue, Integer> entry : typeCount.entrySet()) {
+            if(entry.getValue() >= 3) return true;
+        }
+        return false;
     },
             cards -> {
                 if (cards.length < 3) return -1;
@@ -290,7 +295,7 @@ public enum FiveCardPokerHandRanking implements PokerHandRanking {
 
         if (distinctCardValues.size() < 5) return false;
 
-        for (int i = 0, nextIdx = i + 4; nextIdx < distinctCardValues.size() && i < distinctCardValues.size(); i++) {
+        for (int i = 0, nextIdx = i + 4; nextIdx < distinctCardValues.size(); nextIdx++, i++) {
             if (distinctCardValues.get(nextIdx) == distinctCardValues.get(i) + 4) {
                 return true;
             }

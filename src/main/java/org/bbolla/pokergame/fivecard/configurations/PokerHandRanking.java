@@ -23,6 +23,6 @@ public interface PokerHandRanking {
 	 * @return
 	 */
 	default boolean ranksHigherThan(PokerHandRanking otherHandRanking) {
-		return this.rank() <= otherHandRanking.rank();
+		return this.rank() < otherHandRanking.rank();
 	}
 }

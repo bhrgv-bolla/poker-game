@@ -3,7 +3,6 @@ package org.bbolla.pokergame.fivecard.configurations;
 import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.Card;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 

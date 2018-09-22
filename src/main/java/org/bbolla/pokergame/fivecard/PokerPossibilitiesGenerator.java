@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.configurations.CombinationRecord;
 import org.bbolla.pokergame.fivecard.configurations.CombinationWriter;
 import org.bbolla.pokergame.fivecard.configurations.PokerHand;
-import org.bbolla.pokergame.fivecard.configurations.PokerHandRanking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -87,8 +86,7 @@ public class PokerPossibilitiesGenerator {
      * @return
      */
     private CombinationRecord getCombinationRecord(Card[] currentCards) {
-        PokerHandRanking handRanking = pokerHand.findRank(currentCards);
-        return new CombinationRecord(currentCards, handRanking, handRanking.subRank(currentCards));
+        return pokerHand.findRank(currentCards);
     }
 
 }
