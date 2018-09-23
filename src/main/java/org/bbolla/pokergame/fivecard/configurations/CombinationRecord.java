@@ -19,7 +19,7 @@ public class CombinationRecord implements Comparable<CombinationRecord> {
         if(this.pokerHandRanking.rank() == o.pokerHandRanking.rank()) {
             return this.sameHandRanking - o.sameHandRanking;
         } else {
-            return this.pokerHandRanking.rank() - o.pokerHandRanking.rank();
+            return  o.pokerHandRanking.rank() - this.pokerHandRanking.rank();
         }
     }
 

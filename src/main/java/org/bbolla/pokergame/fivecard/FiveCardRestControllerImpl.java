@@ -31,10 +31,11 @@ public class FiveCardRestControllerImpl implements FiveCardRestController {
     @Override
     public ResponseEntity<Object> getSuggestions(@RequestBody SuggestionsRequest request) throws IOException {
         log.info("Request for getSuggestions {}", request);
+        CombinationRecord currentHand = pokerHand.findRank(request.getCards());
         List<CombinationRecord> combinationRecordList = pokerHand.betterHands(request.getCards());
         Collections.sort(combinationRecordList);
         int high = 10 > combinationRecordList.size()? combinationRecordList.size(): 10;
-        return ResponseEntity.ok(new Object[]{combinationRecordList.size(), combinationRecordList.subList(0, high)});
+        return ResponseEntity.ok(new Object[]{currentHand, combinationRecordList.size(), combinationRecordList.subList(0, high)});
     }
 
     @Override
