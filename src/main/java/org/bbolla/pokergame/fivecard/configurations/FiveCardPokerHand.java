@@ -1,6 +1,7 @@
 package org.bbolla.pokergame.fivecard.configurations;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.bbolla.pokergame.fivecard.Card;
 import org.bbolla.pokergame.fivecard.Deck;
@@ -16,6 +17,7 @@ public class FiveCardPokerHand implements PokerHand<FiveCardPokerHandRanking> {
 
     @Override
     public CombinationRecord findRank(Card[] cards) {
+        if(Sets.newHashSet(cards).size() < cards.length) throw new RuntimeException("Duplicate Cards Exist!! " + Arrays.deepToString(cards));
         for (FiveCardPokerHandRanking ranking : FiveCardPokerHandRanking.values()) {
             if (ranking.check(cards)) {
                 return new CombinationRecord(Arrays.copyOf(cards, cards.length), ranking, ranking.subRank(cards));
